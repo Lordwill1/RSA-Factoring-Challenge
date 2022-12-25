@@ -1,23 +1,46 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
+#include <string.h>
 
-int main()
+int main(int argc, char *argv[])
 {
-    long long int num = 239809320265259;
-    long int factor1 = 2;
-    long int factor2;
+	FILE *stream;
+	char *line = NULL;
+	size_t len = 0;
+	long long flag = 1, div, rest, number, counter;
+	ssize_t nread;
 
-    while (num % factor1)
-    {
-        if (factor1 <= num)
-        {
-            factor1++;
-        }
-        else {
-            return (-1);
-        }
-    }
+	if (argc != 2) {
+		fprintf(stderr, "Usage: %s <file>\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
 
-    factor2 = num / factor1;
-    printf("%lld = %ld * %ld\n", num, factor2, factor1);
-    return (0);
+	stream = fopen(argv[1], "r");
+	if (stream == NULL) {
+		perror("fopen");
+		exit(EXIT_FAILURE);
+	}
+
+	while ((nread = getline(&line, &len, stream)) != -1) {
+		flag = 1, div = 2;
+		number = atoll(line);
+		while (flag) {
+			rest = number % div;
+			if (!rest) {
+				counter = number / div;
+				printf("%lld=%lld*%lld\n", number, counter, div);
+				flag = 0;
+			}
+			div++;
+		}
+	}
+
+	free(line);
+	fclose(stream);
+	exit(EXIT_SUCCESS);
 }

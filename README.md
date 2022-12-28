@@ -1,4 +1,4 @@
-RSA Factoring Challenge\
+RSA Factoring Challenge
 \
 0.Factorize all the things!
 #### 0\. Factorize all the things!#advanced
